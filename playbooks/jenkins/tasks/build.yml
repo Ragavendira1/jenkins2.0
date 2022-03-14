@@ -1,0 +1,80 @@
+---
+- name: Install pip
+  apt: name=python3-pip state=present
+- name: install docker-py
+  pip: name=docker-py
+- name: Install docker.io
+  apt: name=docker.io
+- name: Ensure service is enabled
+  command: systemctl restart docker
+- name: copy custom files
+  copy: 
+   src: trigger-job.sh
+   dest: ./trigger-job.sh
+
+- name: copy custom files
+  copy: 
+   src: trigger-job.groovy
+   dest: ./trigger-job.groovy
+  
+- name: copy custom files
+  copy: 
+   src: sample-maven-job_config.xml
+   dest: ./sample-maven-job_config.xml
+
+- name: copy custom files
+  copy: 
+   src: install-plugins.sh
+   dest: ./install-plugins.sh
+
+- name: copy custom files
+  copy: 
+   src: executors.groovy
+   dest: ./executors.groovy
+
+- name: copy custom files
+  copy: 
+   src: default-user.groovy
+   dest: ./default-user.groovy
+
+- name: copy custom files
+  copy: 
+   src: credentials.xml
+   dest: ./credentials.xml
+
+- name: copy custom files
+  copy: 
+   src: create-freestyle.groovy
+   dest: ./create-freestyle.groovy
+
+- name: copy custom files
+  copy: 
+   src: create-credential.groovy
+   dest: ./create-credential.groovy
+
+- name: copy custom files
+  copy: 
+   src: Dockerfile
+   dest: ./Dockerfile
+
+- name: copy custom files
+  copy: 
+   src: config.xml
+   dest: ./config.xml
+
+- name: Build Docker image from Dockerfile
+  docker_image:
+            name: jenkins_custom
+            source: build
+            build:
+              path: ./
+#            state: present
+#          dockerfile: Dockerfile
+- name: Running the container
+  docker_container:
+            name: jenkins_ansi_anil
+            image: jenkins_custom:latest
+            ports:
+                    - 8881:8080
+- name: Check if container is running
+  shell: docker ps
