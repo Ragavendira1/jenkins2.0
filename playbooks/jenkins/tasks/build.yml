@@ -1,12 +1,51 @@
 ---
-- name: Install pip
-  apt: name=python3-pip state=present
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Upgrade all apt packages
+  apt: upgrade=dist
+
+- name: Install dependencies
+  apt: name=apt-transport-https state=present update_cache=yes
+
+- name: Install dependencies
+  apt: name=ca-certificates state=present update_cache=yes
+
+- name: Install dependencies
+  apt: name=curl state=present update_cache=yes
+
+- name: Install dependencies
+  apt: name=software-properties-common state=present update_cache=yes
+- name: Install dependencies
+  apt: name=gnupg-agent state=present update_cache=yes
+
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add apt repository for stable version
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+- name: Update apt repo and cache on all Debian/Ubuntu boxes
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  become: true
+
+- name: Upgrade all apt packages
+  apt: upgrade=yes force_apt_get=yes
+  become: true
+
+- name: Install Python pip
+  apt: name=python3-pip update_cache=true state=present force_apt_get=yes
+
+
 - name: install docker-py
   pip: name=docker-py
-- name: Install docker.io
-  apt: name=docker.io
-- name: Ensure service is enabled
-  command: systemctl restart docker
+
+- name: Install Docker
+  apt: name=docker.io state=present update_cache=yes
+
 - name: copy custom files
   copy: 
    src: trigger-job.sh
