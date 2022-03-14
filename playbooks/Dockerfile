@@ -1,6 +1,6 @@
 FROM jenkins/jenkins:lts
 
-ARG HOST_DOCKER_GROUP_ID
+#ARG HOST_DOCKER_GROUP_ID
  
 # Installing the plugins we need using the in-built install-plugins.sh script
 RUN install-plugins.sh pipeline-graph-analysis:1.9 \
@@ -116,8 +116,8 @@ RUN chmod -R 777 /usr/share/jenkins/ref/trigger-job.sh
 
 # Create 'docker' group with provided group ID 
 # and add 'jenkins' user to it
-RUN groupadd docker -g ${HOST_DOCKER_GROUP_ID} && \
-    usermod -a -G docker jenkins
+#RUN groupadd docker -g ${HOST_DOCKER_GROUP_ID} && \
+#    usermod -a -G docker jenkins
 
 
 RUN apt-get update && apt-get install -y tree nano curl sudo
@@ -127,7 +127,7 @@ RUN chmod 755 /usr/local/bin/docker-compose
 RUN usermod -a -G sudo jenkins
 RUN echo "jenkins ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN newgrp docker
+#RUN newgrp docker
 
 USER jenkins
 #ENTRYPOINT ["/bin/sh -c /var/jenkins_home/trigger-job.sh"]
